@@ -24,4 +24,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\shaders\vertex_shaders.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\shaders\fragment_shaders.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

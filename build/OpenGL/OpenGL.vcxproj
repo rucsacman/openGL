@@ -24,6 +24,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\main.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\shaders\fragment_shaders.glsl" />
+    <None Include="..\..\shaders\vertex_shaders.glsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B456D89B-DEDD-435C-8108-1CC5F9F4F5CF}</ProjectGuid>
