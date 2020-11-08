@@ -1,4 +1,21 @@
 #include "main.h"
+
+Vertex vertices[] = {
+	//POSITION							//COLOR							//TEX_CROOD
+	glm::vec3(0.0f, 0.5f, 0.0f),	glm::vec3(1.0f, 0.0f, 0.0f),	glm::vec2(0.0f, 1.0f),
+	glm::vec3(-0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 1.0f, 0.0f),	glm::vec2(0.0f, 0.0f),
+	glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 0.0f, 1.0f),	glm::vec2(1.0f, 0.0f)
+};
+
+unsigned nOfVetices = sizeof(vertices) / sizeof(Vertex);
+
+GLuint indices[] =
+{
+	0,1,2
+};
+
+unsigned nOfIndices = sizeof(indices) / sizeof(GLuint);
+
 void framebuffer_resize_callback(GLFWwindow* window, int framebufferWidth, int framebufferHeight) {
 	glViewport(0, 0, framebufferWidth, framebufferHeight);
 }
@@ -104,6 +121,13 @@ bool loadShaders(GLuint &program)
 	return loadSuccess;
 }
 
+void updateInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
 int main() 
 {
 	//Initilize GLFW
@@ -139,6 +163,18 @@ int main()
 		std::cout << "ERROR::MAIN.CPP FAILED GLEW_INIT\n";
 		glfwTerminate();
 	}
+	//OPEN GL OPTIONS
+	glEnable(GL_DEPTH_TEST);
+	//specify facing polygons can be culled
+	glEnable(GL_CULL_FACE);
+
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //GL_LINE GL_FILL
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -151,14 +187,64 @@ int main()
 
 	//Main loop
 
+	//VAO, VBO, EBO
+	GLuint VAO;
+
+
+	glCreateVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	//Gen buffers
+	GLuint VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); //GL_DYNAMIC_DRAW
+
+	//Gen EBO
+	GLuint EBO;
+
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	//Set vertex attribute and enable(Input assembly)
+
+	//Position
+	GLuint attribLoc = glGetAttribLocation(core_program, "vertex_position");
+	glVertexAttribPointer(attribLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+	glEnableVertexAttribArray(attribLoc);
+
+	//Color
+	attribLoc = glGetAttribLocation(core_program, "vertex_color");
+	glVertexAttribPointer(attribLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+	glEnableVertexAttribArray(attribLoc);
+
+	//texcoord
+	attribLoc = glGetAttribLocation(core_program, "texcoord");
+	glVertexAttribPointer(attribLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoord));
+	glEnableVertexAttribArray(attribLoc);
+
+	//Bind VAO
+	glBindVertexArray(0);
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//enable events.. etc: mouse event 
 		glfwPollEvents();
+		updateInput(window);
 
 		//Clear
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		glUseProgram(core_program);
+
+		//Bind vertex array object
+		glBindVertexArray(VAO);
+
+		glDrawElements(GL_TRIANGLES,nOfIndices, GL_UNSIGNED_INT,0);
+		//glDrawArrays(GL_TRIANGLES, 0, nOfVetices); //Similar glDrawElement
 
 
 		//END draw
@@ -170,6 +256,6 @@ int main()
 	glfwTerminate();
 
 	glDeleteProgram(core_program);
-	system("PAUSE");
+	//system("PAUSE");
 	return 0;
 }
