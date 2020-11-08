@@ -2,16 +2,18 @@
 
 Vertex vertices[] = {
 	//POSITION							//COLOR							//TEX_CROOD
-	glm::vec3(0.0f, 0.5f, 0.0f),	glm::vec3(1.0f, 0.0f, 0.0f),	glm::vec2(0.0f, 1.0f),
-	glm::vec3(-0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 1.0f, 0.0f),	glm::vec2(0.0f, 0.0f),
-	glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 0.0f, 1.0f),	glm::vec2(1.0f, 0.0f)
+	glm::vec3(-0.5f, 0.5f, 0.0f),	glm::vec3(0.5f, 0.0f, 0.0f),	glm::vec2(0.0f, 1.0f),
+	glm::vec3(-0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 0.5f, 0.0f),	glm::vec2(0.0f, 0.0f),
+	glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 0.0f, 0.5f),	glm::vec2(1.0f, 0.0f),
+	glm::vec3(0.5f, 0.5f, 0.0f),	glm::vec3(0.5f, 1.0f, 0.5f),	glm::vec2(0.0f, 0.0f)
 };
 
 unsigned nOfVetices = sizeof(vertices) / sizeof(Vertex);
 
 GLuint indices[] =
 {
-	0,1,2
+	0,1,2,
+	0,2,3
 };
 
 unsigned nOfIndices = sizeof(indices) / sizeof(GLuint);
